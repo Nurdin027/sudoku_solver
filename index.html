@@ -572,7 +572,7 @@
                     multiple.push(false)
                 } else {
                     multiple.push(true)
-                        console.log(target[0], posible)
+                    console.log(target[0], posible)
                 }
                 filled.push(false)
             } else {
@@ -582,8 +582,7 @@
         if (all(filled)) {
             alert("Solved!");
             $("#check").prop("disabled", true);
-        }
-        if (all(multiple)) {
+        } else if (all(multiple)) {
             alert("Dead End!");
             checkpoint();
         }
