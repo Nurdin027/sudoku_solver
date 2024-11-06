@@ -1,0 +1,675 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sudoku Solver</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!--suppress CssUnusedSymbol -->
+    <style>
+        :root {
+            --ukuran: 15rem;
+            --ukuran-grid: 5rem;
+        }
+
+        body {
+            text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
+            box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
+            height: 100%;
+            min-height: 100vh;
+        }
+
+        #wadah {
+            max-width: calc((var(--ukuran) * 3) + 3rem);
+        }
+
+        .sector {
+            height: var(--ukuran);
+        }
+
+        .grid {
+            height: var(--ukuran-grid);
+        }
+
+        .btn-grid {
+            min-height: 100%;
+            min-width: 100%;
+            font-weight: bold;
+            font-size: 2.5rem;
+        }
+
+        .btn-focus {
+            background-color: rgba(13, 202, 240, 0.1);
+        }
+
+        .new {
+            color: #0dcaf0;
+        }
+    </style>
+</head>
+<body>
+<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <main class="px-3">
+        <h1>Sudoku Solver</h1>
+        <button class="btn btn-success mb-2" id="check">Check</button>
+        <button class="btn btn-success mb-2" id="rollback" style="display: none;">Rollback</button>
+        <table class="table">
+            <tr>
+                <td>1</td>
+                <td>:</td>
+                <th id="sisa1"></th>
+
+                <td>2</td>
+                <td>:</td>
+                <th id="sisa2"></th>
+
+                <td>3</td>
+                <td>:</td>
+                <th id="sisa3"></th>
+
+                <td>4</td>
+                <td>:</td>
+                <th id="sisa4"></th>
+
+                <td>5</td>
+                <td>:</td>
+                <th id="sisa5"></th>
+
+                <td>6</td>
+                <td>:</td>
+                <th id="sisa6"></th>
+
+                <td>7</td>
+                <td>:</td>
+                <th id="sisa7"></th>
+
+                <td>8</td>
+                <td>:</td>
+                <th id="sisa8"></th>
+
+                <td>9</td>
+                <td>:</td>
+                <th id="sisa9"></th>
+            </tr>
+        </table>
+        <div class="card card-body p-5" id="wadah">
+            <div class="row row-cols-3">
+                <div class="col border border-2 sector">
+                    <div class="row row-cols-3">
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_1 row_1 col_1"
+                                    data-sec="1" data-row="1" data-col="1"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_1 row_1 col_2"
+                                    data-sec="1" data-row="1" data-col="2"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_1 row_1 col_3"
+                                    data-sec="1" data-row="1" data-col="3"></button>
+                        </div>
+
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_1 row_2 col_1"
+                                    data-sec="1" data-row="2" data-col="1"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_1 row_2 col_2"
+                                    data-sec="1" data-row="2" data-col="2"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_1 row_2 col_3"
+                                    data-sec="1" data-row="2" data-col="3"></button>
+                        </div>
+
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_1 row_3 col_1"
+                                    data-sec="1" data-row="3" data-col="1"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_1 row_3 col_2"
+                                    data-sec="1" data-row="3" data-col="2"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_1 row_3 col_3"
+                                    data-sec="1" data-row="3" data-col="3"></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col border border-2 sector">
+                    <div class="row row-cols-3">
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_2 row_1 col_4"
+                                    data-sec="2" data-row="1" data-col="4"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_2 row_1 col_5"
+                                    data-sec="2" data-row="1" data-col="5"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_2 row_1 col_6"
+                                    data-sec="2" data-row="1" data-col="6"></button>
+                        </div>
+
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_2 row_2 col_4"
+                                    data-sec="2" data-row="2" data-col="4"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_2 row_2 col_5"
+                                    data-sec="2" data-row="2" data-col="5"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_2 row_2 col_6"
+                                    data-sec="2" data-row="2" data-col="6"></button>
+                        </div>
+
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_2 row_3 col_4"
+                                    data-sec="2" data-row="3" data-col="4"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_2 row_3 col_5"
+                                    data-sec="2" data-row="3" data-col="5"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_2 row_3 col_6"
+                                    data-sec="2" data-row="3" data-col="6"></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col border border-2 sector">
+                    <div class="row row-cols-3">
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_3 row_1 col_7"
+                                    data-sec="3" data-row="1" data-col="7"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_3 row_1 col_8"
+                                    data-sec="3" data-row="1" data-col="8"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_3 row_1 col_9"
+                                    data-sec="3" data-row="1" data-col="9"></button>
+                        </div>
+
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_3 row_2 col_7"
+                                    data-sec="3" data-row="2" data-col="7"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_3 row_2 col_8"
+                                    data-sec="3" data-row="2" data-col="8"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_3 row_2 col_9"
+                                    data-sec="3" data-row="2" data-col="9"></button>
+                        </div>
+
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_3 row_3 col_7"
+                                    data-sec="3" data-row="3" data-col="7"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_3 row_3 col_8"
+                                    data-sec="3" data-row="3" data-col="8"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_3 row_3 col_9"
+                                    data-sec="3" data-row="3" data-col="9"></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col border border-2 sector">
+                    <div class="row row-cols-3">
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_4 row_4 col_1"
+                                    data-sec="4" data-row="4" data-col="1"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_4 row_4 col_2"
+                                    data-sec="4" data-row="4" data-col="2"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_4 row_4 col_3"
+                                    data-sec="4" data-row="4" data-col="3"></button>
+                        </div>
+
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_4 row_5 col_1"
+                                    data-sec="4" data-row="5" data-col="1"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_4 row_5 col_2"
+                                    data-sec="4" data-row="5" data-col="2"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_4 row_5 col_3"
+                                    data-sec="4" data-row="5" data-col="3"></button>
+                        </div>
+
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_4 row_6 col_1"
+                                    data-sec="4" data-row="6" data-col="1"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_4 row_6 col_2"
+                                    data-sec="4" data-row="6" data-col="2"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_4 row_6 col_3"
+                                    data-sec="4" data-row="6" data-col="3"></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col border border-2 sector">
+                    <div class="row row-cols-3">
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_5 row_4 col_4"
+                                    data-sec="5" data-row="4" data-col="4"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_5 row_4 col_5"
+                                    data-sec="5" data-row="4" data-col="5"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_5 row_4 col_6"
+                                    data-sec="5" data-row="4" data-col="6"></button>
+                        </div>
+
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_5 row_5 col_4"
+                                    data-sec="5" data-row="5" data-col="4"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_5 row_5 col_5"
+                                    data-sec="5" data-row="5" data-col="5"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_5 row_5 col_6"
+                                    data-sec="5" data-row="5" data-col="6"></button>
+                        </div>
+
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_5 row_6 col_4"
+                                    data-sec="5" data-row="6" data-col="4"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_5 row_6 col_5"
+                                    data-sec="5" data-row="6" data-col="5"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_5 row_6 col_6"
+                                    data-sec="5" data-row="6" data-col="6"></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col border border-2 sector">
+                    <div class="row row-cols-3">
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_6 row_4 col_7"
+                                    data-sec="6" data-row="4" data-col="7"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_6 row_4 col_8"
+                                    data-sec="6" data-row="4" data-col="8"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_6 row_4 col_9"
+                                    data-sec="6" data-row="4" data-col="9"></button>
+                        </div>
+
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_6 row_5 col_7"
+                                    data-sec="6" data-row="5" data-col="7"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_6 row_5 col_8"
+                                    data-sec="6" data-row="5" data-col="8"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_6 row_5 col_9"
+                                    data-sec="6" data-row="5" data-col="9"></button>
+                        </div>
+
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_6 row_6 col_7"
+                                    data-sec="6" data-row="6" data-col="7"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_6 row_6 col_8"
+                                    data-sec="6" data-row="6" data-col="8"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_6 row_6 col_9"
+                                    data-sec="6" data-row="6" data-col="9"></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col border border-2 sector">
+                    <div class="row row-cols-3">
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_7 row_7 col_1"
+                                    data-sec="7" data-row="7" data-col="1"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_7 row_7 col_2"
+                                    data-sec="7" data-row="7" data-col="2"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_7 row_7 col_3"
+                                    data-sec="7" data-row="7" data-col="3"></button>
+                        </div>
+
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_7 row_8 col_1"
+                                    data-sec="7" data-row="8" data-col="1"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_7 row_8 col_2"
+                                    data-sec="7" data-row="8" data-col="2"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_7 row_8 col_3"
+                                    data-sec="7" data-row="8" data-col="3"></button>
+                        </div>
+
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_7 row_9 col_1"
+                                    data-sec="7" data-row="9" data-col="1"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_7 row_9 col_2"
+                                    data-sec="7" data-row="9" data-col="2"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_7 row_9 col_3"
+                                    data-sec="7" data-row="9" data-col="3"></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col border border-2 sector">
+                    <div class="row row-cols-3">
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_8 row_7 col_4"
+                                    data-sec="8" data-row="7" data-col="4"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_8 row_7 col_5"
+                                    data-sec="8" data-row="7" data-col="5"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_8 row_7 col_6"
+                                    data-sec="8" data-row="7" data-col="6"></button>
+                        </div>
+
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_8 row_8 col_4"
+                                    data-sec="8" data-row="8" data-col="4"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_8 row_8 col_5"
+                                    data-sec="8" data-row="8" data-col="5"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_8 row_8 col_6"
+                                    data-sec="8" data-row="8" data-col="6"></button>
+                        </div>
+
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_8 row_9 col_4"
+                                    data-sec="8" data-row="9" data-col="4"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_8 row_9 col_5"
+                                    data-sec="8" data-row="9" data-col="5"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_8 row_9 col_6"
+                                    data-sec="8" data-row="9" data-col="6"></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col border border-2 sector">
+                    <div class="row row-cols-3">
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_9 row_7 col_7"
+                                    data-sec="9" data-row="7" data-col="7"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_9 row_7 col_8"
+                                    data-sec="9" data-row="7" data-col="8"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_9 row_7 col_9"
+                                    data-sec="9" data-row="7" data-col="9"></button>
+                        </div>
+
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_9 row_8 col_7"
+                                    data-sec="9" data-row="8" data-col="7"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_9 row_8 col_8"
+                                    data-sec="9" data-row="8" data-col="8"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_9 row_8 col_9"
+                                    data-sec="9" data-row="8" data-col="9"></button>
+                        </div>
+
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_9 row_9 col_7"
+                                    data-sec="9" data-row="9" data-col="7"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_9 row_9 col_8"
+                                    data-sec="9" data-row="9" data-col="8"></button>
+                        </div>
+                        <div class="col border grid p-0">
+                            <button class="btn btn-grid sec_9 row_9 col_9"
+                                    data-sec="9" data-row="9" data-col="9"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    let grid = $(".btn-grid"),
+        pos_checkpoint = [],
+        rollback = $("#rollback")
+
+    const all = (arr, fn = Boolean) => arr.every(fn);
+    grid.on("click", function () {
+        let target = $(this),
+            sec = target.data("sec"),
+            col = target.data("col"),
+            row = target.data("row"),
+            val = target.text()
+        focusing(sec, row, col);
+
+        target.on("keydown", function (e) {
+            let numbers = /^[-+]?[0-9]+$/;
+            if (e.key.match(numbers)) {
+                target.text(e.key);
+                target.tooltip('dispose');
+            } else if
+            (e.key === "Backspace") {
+                target.text("")
+            } else if
+            (e.key === "ArrowRight") {
+                col < 9 ? col++ : col = 1
+                target = $(`.row_${row}.col_${col}`);
+                /*
+                if (col % 3 === 0) {
+                    sec++
+                } else if (col % 3 === 1) {
+                    sec--
+                }
+                 */
+                focusing(sec, row, col);
+            } else if
+            (e.key === "ArrowDown") {
+                row < 9 ? row++ : row = 1
+                target = $(`.row_${row}.col_${col}`);
+                /*
+                if (row % 3 === 0) {
+                    sec += 3
+                } else if (row % 3 === 1) {
+                    sec -= 3
+                }
+                */
+                focusing(sec, row, col);
+            } else if
+            (e.key === "ArrowLeft") {
+                col === 1 ? col = 9 : col--
+                target = $(`.row_${row}.col_${col}`);
+                focusing(sec, row, col);
+            } else if
+            (e.key === "ArrowUp") {
+                row === 1 ? row = 9 : row--
+                target = $(`.row_${row}.col_${col}`);
+                focusing(sec, row, col);
+            }
+        });
+        let isinya = []
+        grid.each(function () {
+            isinya.push($(this).text())
+            if (val !== "" && $(this).text() === val) {
+                $(this).toggleClass("btn-focus", true);
+            }
+        });
+        if (!isinya.includes("")) {
+            alert("Sudoku Solved!")
+        }
+    });
+
+    function focusing(sec, row, col, unfocus = true) {
+        if (unfocus) {
+            grid.toggleClass("btn-focus", false);
+        }
+        $(`.sec_${sec}`).toggleClass("btn-focus", true);
+        $(`.row_${row}`).toggleClass("btn-focus", true);
+        $(`.col_${col}`).toggleClass("btn-focus", true);
+    }
+
+    $("#check").on("click", function () {
+        let filled = [],
+            multiple = [],
+            list_posible = [],
+            sisa = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+        grid.each(function () {
+            let target = $(this),
+                sec = target.data("sec"),
+                row = target.data("row"),
+                col = target.data("col")
+            if (target.text() === "") {
+                let posible = ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+                    deleted = [],
+                    deleted_at = []
+                $(`.sec_${sec}`).each(function () {
+                    let me = $(this).data("sec") === sec && $(this).data("col") === col && $(this).data("row") === row
+                    if (!me && $(this).text() !== "") {
+                        let ind = posible.indexOf($(this).text());
+                        if (ind > -1) {
+                            deleted.push(posible.splice(ind, 1));
+                        }
+                        deleted_at.push("sec " + sec)
+                    }
+                });
+                $(`.col_${col}`).each(function () {
+                    let me = $(this).data("sec") === sec && $(this).data("col") === col && $(this).data("row") === row
+                    if (!me && $(this).text() !== "") {
+                        let ind = posible.indexOf($(this).text());
+                        if (ind > -1) {
+                            deleted.push(posible.splice(ind, 1));
+                        }
+                        deleted_at.push("col " + col)
+                    }
+                });
+                $(`.row_${row}`).each(function () {
+                    let me = $(this).data("sec") === sec && $(this).data("col") === col && $(this).data("row") === row
+                    if (!me && $(this).text() !== "") {
+                        let ind = posible.indexOf($(this).text());
+                        if (ind > -1) {
+                            deleted.push(posible.splice(ind, 1));
+                        }
+                        deleted_at.push("row " + row)
+                    }
+                });
+                target.tooltip('dispose');
+                if (posible.length === 1) {
+                    target.text(posible[0]).toggleClass("new", true);
+                    multiple.push(false)
+                } else {
+                    multiple.push(true)
+                    target.attr("title", posible).tooltip('update');
+                    list_posible.push(posible)
+                    console.log(target[0], posible)
+                }
+                filled.push(false)
+            } else {
+                sisa[parseInt(target.text()) - 1] += 1
+                filled.push(true)
+            }
+        });
+        $.each(sisa, function (i, v) {
+            $("#sisa" + (i + 1)).text(9 - v)
+        });
+        if (all(filled)) {
+            Swal.fire({
+                icon: "success",
+                title: "Solved!",
+            });
+            $("#check").prop("disabled", true);
+        } else if (all(multiple)) {
+            const kosong = (element) => element.length === 0;
+            if (list_posible.some(kosong)) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Dead End!",
+                });
+                rollback.show();
+            } else {
+                Swal.fire({
+                    icon: "info",
+                    title: "Multiple possibility!",
+                });
+            }
+            checkpoint();
+        }
+    });
+
+    function checkpoint() {
+        let isi = []
+        grid.each(function () {
+            let value = $(this).text(),
+                row = $(this).data("row"),
+                col = $(this).data("col")
+            isi.push({col: col, row: row, value: value})
+        })
+        pos_checkpoint.push(isi);
+    }
+
+    rollback.on("click", function () {
+        let isi = pos_checkpoint[0]
+        // let isi = pos_checkpoint[pos_checkpoint.length - 1]
+        $.each(isi, function (i, v) {
+            $(`.col_${v['col']}.row_${v['row']}`).text(v['value'])
+        })
+        pos_checkpoint.splice(0, 1)
+    });
+</script>
+</html>

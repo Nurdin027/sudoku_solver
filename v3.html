@@ -1,0 +1,318 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sudoku Solver</title>
+    <link rel="stylesheet" href="assets/bootstrap.min.css">
+    <!--suppress CssUnusedSymbol -->
+    <style>
+
+        .btn-grid {
+            padding: 0;
+            height: 5rem;
+            aspect-ratio: 1;
+            font-weight: bold;
+            font-size: 3rem;
+        }
+
+        .grid {
+            height: 15rem;
+        }
+
+        .col-num {
+            text-align: -webkit-center;
+            padding: 0;
+        }
+
+        .btn-num {
+            display: grid;
+            text-align: center;
+            width: 5rem;
+        }
+
+        .btn-del {
+            text-align: center;
+            width: 5rem;
+            height: 4.5rem;
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        .lbl-num {
+            font-weight: bold;
+            font-size: 1.5rem;
+            padding-inline: 0;
+        }
+
+        label.counter {
+            font-size: 0.7rem;
+        }
+
+        #wadah2 {
+            padding: 5rem;
+        }
+
+        .row-cols-9 .col {
+            flex: 0 0 auto;
+            width: calc(100% / 9) !important;
+            height: calc(100% / 9) !important;
+        }
+
+        :root {
+            --batas: 2px solid gray;
+        }
+
+        .border-kiri {
+            border-left: var(--batas) !important;
+        }
+
+        .border-kanan {
+            border-right: var(--batas) !important;
+        }
+
+        .border-bawah {
+            border-bottom: var(--batas) !important;
+        }
+
+        .border-atas {
+            border-top: var(--batas) !important;
+        }
+
+        .btn-focus {
+            background-color: rgba(13, 202, 240, 0.1);
+        }
+
+        .btn-focus:focus {
+            background-color: rgba(13, 202, 240, 0.1);
+        }
+
+    </style>
+</head>
+<body>
+<main>
+    <div class="row row-cols-1 row-cols-lg-2">
+        <div class="col text-center p-0">
+            <div class="px-5 py-3" id="wadah"></div>
+        </div>
+        <div class="col text-center py-0 py-lg-5 px-5">
+            <div class="row row-cols-12 row-cols-lg-3">
+                <div class="col col-num">
+                    <button class="btn btn-num btn-lg btn-info m-1" data-num="1">
+                        <label class="lbl-num">1</label>
+                        <label class="counter">9</label>
+                    </button>
+                </div>
+                <div class="col col-num">
+                    <button class="btn btn-num btn-lg btn-info m-1" data-num="2">
+                        <label class="lbl-num">2</label>
+                        <label class="counter">9</label>
+                    </button>
+                </div>
+                <div class="col col-num">
+                    <button class="btn btn-num btn-lg btn-info m-1" data-num="3">
+                        <label class="lbl-num">3</label>
+                        <label class="counter">9</label>
+                    </button>
+                </div>
+                <div class="col col-num">
+                    <button class="btn btn-num btn-lg btn-info m-1" data-num="4">
+                        <label class="lbl-num">4</label>
+                        <label class="counter">9</label>
+                    </button>
+                </div>
+                <div class="col col-num">
+                    <button class="btn btn-num btn-lg btn-info m-1" data-num="5">
+                        <label class="lbl-num">5</label>
+                        <label class="counter">9</label>
+                    </button>
+                </div>
+                <div class="col col-num">
+                    <button class="btn btn-num btn-lg btn-info m-1" data-num="6">
+                        <label class="lbl-num">6</label>
+                        <label class="counter">9</label>
+                    </button>
+                </div>
+                <div class="col col-num">
+                    <button class="btn btn-num btn-lg btn-info m-1" data-num="7">
+                        <label class="lbl-num">7</label>
+                        <label class="counter">9</label>
+                    </button>
+                </div>
+                <div class="col col-num">
+                    <button class="btn btn-num btn-lg btn-info m-1" data-num="8">
+                        <label class="lbl-num">8</label>
+                        <label class="counter">9</label>
+                    </button>
+                </div>
+                <div class="col col-num">
+                    <button class="btn btn-num btn-lg btn-info m-1" data-num="9">
+                        <label class="lbl-num">9</label>
+                        <label class="counter">9</label>
+                    </button>
+                </div>
+            </div>
+            <button class="btn btn-del btn-info m-1" id="del">DEL</button>
+        </div>
+    </div>
+</main>
+<script src="assets/bootstrap.bundle.min.js"></script>
+<script src="assets/jquery.min.js"></script>
+<script>
+    let isi = ""
+    for (let row = 1; row <= 9; row++) {
+        let isi_row = "",
+            atas = (row % 3 === 1 && row > 1) ? "border-atas" : "",
+            bawah = (row % 3 === 0 && row < 9) ? "border-bawah" : "",
+            sec_y = 1 <= row && row <= 3 ? 1 : (4 <= row && row <= 6 ? 2 : 3)
+        for (let col = 1; col <= 9; col++) {
+            let kanan = (col % 3 === 0 && col < 9) ? "border-kanan" : "",
+                kiri = (col % 3 === 1 && col > 1) ? "border-kiri" : "",
+                sec_x = 1 <= col && col <= 3 ? 1 : (4 <= col && col <= 6 ? 2 : 3)
+            isi_row += `
+                <button class="btn col btn-grid border ${kanan} ${kiri} ${atas} ${bawah}
+                secx_${sec_x} secy_${sec_y} row_${row} col_${col}"
+                data-secx="${sec_x}" data-secy="${sec_y}" data-row="${row}" data-col="${col}"></button>
+            `
+        }
+        isi += `
+            ${isi_row}
+        `
+    }
+    $("#wadah").html(`
+        <div class="row row-cols-9">
+            ${isi}
+        </div>
+    `);
+</script>
+<script>
+    let target,
+        grid = $(".btn-grid")
+    grid.on("click", function () {
+        target = $(this)
+        let row = target.data("row"),
+            col = target.data("col"),
+            sec_y = target.data("secy"),
+            sec_x = target.data("secx")
+        focusing(row, col, sec_y, sec_x)
+    });
+
+    $(".btn-num").on("click", function () {
+        let isi = $(this).data("num")
+        setNum(isi)
+    });
+    $("#del").on("click", function () {
+        target.text("");
+        target.toggleClass("border-danger", false);
+    });
+
+
+    $(window).on("click", function (e) {
+        let clsna = e.target.className
+        if (!clsna.includes('btn-grid') && !clsna.includes('btn-num') && !clsna.includes('btn-del')) {
+            grid.toggleClass("btn-focus", false);
+        }
+    }).on("keyup", function (e) {
+        let numbers = /^[-+]?[1-9]+$/;
+        if (e.key.match(numbers)) {
+            setNum(e.key);
+        } else if
+        (["Backspace", "Delete", "0"].includes(e.key)) {
+            target.text("");
+            target.toggleClass("border-danger", false);
+        } else if
+        (e.key === "ArrowRight") {
+            let row = target.data("row"),
+                col = target.data("col")
+            col < 9 ? col++ : col = 1
+            target = $(`.row_${row}.col_${col}`);
+
+            let sec_y = target.data("secy"),
+                sec_x = target.data("secx")
+            focusing(row, col, sec_y, sec_x)
+        } else if
+        (e.key === "ArrowLeft") {
+            let row = target.data("row"),
+                col = target.data("col")
+            col === 1 ? col = 9 : col--
+            target = $(`.row_${row}.col_${col}`);
+
+            let sec_y = target.data("secy"),
+                sec_x = target.data("secx")
+            focusing(row, col, sec_y, sec_x)
+        } else if
+        (e.key === "ArrowDown") {
+            let row = target.data("row"),
+                col = target.data("col")
+            row < 9 ? row++ : row = 1
+            target = $(`.row_${row}.col_${col}`);
+
+            let sec_y = target.data("secy"),
+                sec_x = target.data("secx")
+            focusing(row, col, sec_y, sec_x)
+        } else if
+        (e.key === "ArrowUp") {
+            let row = target.data("row"),
+                col = target.data("col")
+            row === 1 ? row = 9 : row--
+            target = $(`.row_${row}.col_${col}`);
+
+            let sec_y = target.data("secy"),
+                sec_x = target.data("secx")
+            focusing(row, col, sec_y, sec_x)
+        } else if
+        (e.key === "Tab" && !e.altKey) {
+            let row = target.data("row"),
+                col = target.data("col")
+            if (col === 9) {
+                if (row === 9) {
+                    row = 0
+                }
+                col = 1
+                row += 1
+            } else {
+                col += 1
+            }
+            target = $(`.row_${row}.col_${col}`);
+            let sec_y = target.data("secy"),
+                sec_x = target.data("secx")
+            focusing(row, col, sec_y, sec_x)
+        }
+    });
+
+    function setNum(isi) {
+        if (target) {
+            target.text(isi)
+            //validate(target)
+        }
+    }
+
+    function focusing(row, col, sec_y, sec_x, unfocus = true) {
+        if (unfocus) {
+            grid.toggleClass("btn-focus", false);
+        }
+        $(`.secx_${sec_x}.secy_${sec_y}`).toggleClass("btn-focus", true);
+        $(`.row_${row}`).toggleClass("btn-focus", true);
+        $(`.col_${col}`).toggleClass("btn-focus", true);
+    }
+
+    function validate(target) {
+        let row = target.data("row"),
+            col = target.data("col"),
+            sec_y = target.data("secy"),
+            sec_x = target.data("secx"),
+            ada = [], angka = []
+
+        $(`.secx_${sec_x}.secy_${sec_y}`).each(function () {
+            let disi = $(this).text(),
+                dc = $(this).data("col"),
+                dr = $(this).data("row")
+            if (dc !== col && dr !== row) {
+                angka.push($(this).text())
+                ada.push(disi === target.text())
+            }
+        });
+        target.toggleClass("border-danger", ada.some((e) => e))
+    }
+</script>
+</body>
+</html>
