@@ -7,6 +7,10 @@
     <!--suppress CssUnusedSymbol -->
     <style>
 
+        body {
+            overflow: hidden;
+        }
+
         .btn-grid {
             padding: 0;
             height: 5rem;
@@ -202,7 +206,8 @@
     });
     $("#del").on("click", function () {
         target.text("");
-        target.toggleClass("border-danger", false);
+        target.toggleClass("border-danger text-danger", false);
+        delValidate()
     });
 
 
@@ -218,7 +223,8 @@
         } else if
         (["Backspace", "Delete", "0"].includes(e.key)) {
             target.text("");
-            target.toggleClass("border-danger", false);
+            target.toggleClass("border-danger text-danger", false);
+            delValidate();
         } else if
         (e.key === "ArrowRight") {
             let row = target.data("row"),
@@ -260,7 +266,7 @@
                 sec_x = target.data("secx")
             focusing(row, col, sec_y, sec_x)
         } else if
-        (e.key === "Tab" && !e.altKey) {
+        (e.key === "Tab" && !e.altKey && target) {
             let row = target.data("row"),
                 col = target.data("col")
             if (col === 9) {
@@ -283,6 +289,7 @@
         if (target) {
             target.text(isi)
             //validate(target)
+            validasi(target)
         }
     }
 
@@ -311,7 +318,40 @@
                 ada.push(disi === target.text())
             }
         });
-        target.toggleClass("border-danger", ada.some((e) => e))
+        target.toggleClass("border-danger text-danger", ada.some((e) => e))
+    }
+
+    function validasi(target) {
+        let row = $(target).data("row"),
+            col = $(target).data("col"),
+            sec_x = $(target).data("secx"),
+            sec_y = $(target).data("secy"),
+            list_row = [], list_col = [], list_sec = []
+        $(".row_" + row).each(function () {
+            if (!$(this).hasClass('col_' + col)) {
+                list_row.push($(this).text())
+            }
+        });
+        $(".col_" + col).each(function () {
+            if (!$(this).hasClass('row_' + row)) {
+                list_col.push($(this).text())
+            }
+        });
+        $(`.secx_${sec_x}.secy_${sec_y}`).each(function () {
+            if (!($(this).hasClass('col_' + col) && $(this).hasClass('row_' + row))) {
+                list_sec.push($(this).text())
+            }
+        });
+        let inrow = list_row.includes(target.text()),
+            incol = list_col.includes(target.text()),
+            insec = list_sec.includes(target.text())
+        target.toggleClass("border-danger text-danger", inrow || incol || insec);
+    }
+
+    function delValidate() {
+        $(".btn-grid.border-danger.text-danger").each(function () {
+            validasi($(this))
+        });
     }
 </script>
 </body>
