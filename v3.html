@@ -90,6 +90,9 @@
             background-color: rgba(13, 202, 240, 0.1);
         }
 
+        .new {
+            color: #0dcaf0;
+        }
     </style>
 </head>
 <body>
@@ -99,63 +102,70 @@
             <div class="px-5 py-3" id="wadah"></div>
         </div>
         <div class="col text-center py-0 py-lg-5 px-5">
-            <div class="row row-cols-12 row-cols-lg-3">
-                <div class="col col-num">
-                    <button class="btn btn-num btn-lg btn-info m-1" data-num="1">
-                        <label class="lbl-num">1</label>
-                        <label class="counter">9</label>
-                    </button>
+            <div class="row row-cols-1">
+                <div class="col">
+                    <div class="row row-cols-12 row-cols-lg-3">
+                        <div class="col col-num">
+                            <button class="btn btn-num btn-lg btn-info m-1" data-num="1">
+                                <label class="lbl-num">1</label>
+                                <label id="counter_1">9</label>
+                            </button>
+                        </div>
+                        <div class="col col-num">
+                            <button class="btn btn-num btn-lg btn-info m-1" data-num="2">
+                                <label class="lbl-num">2</label>
+                                <label id="counter_2">9</label>
+                            </button>
+                        </div>
+                        <div class="col col-num">
+                            <button class="btn btn-num btn-lg btn-info m-1" data-num="3">
+                                <label class="lbl-num">3</label>
+                                <label id="counter_3">9</label>
+                            </button>
+                        </div>
+                        <div class="col col-num">
+                            <button class="btn btn-num btn-lg btn-info m-1" data-num="4">
+                                <label class="lbl-num">4</label>
+                                <label id="counter_4">9</label>
+                            </button>
+                        </div>
+                        <div class="col col-num">
+                            <button class="btn btn-num btn-lg btn-info m-1" data-num="5">
+                                <label class="lbl-num">5</label>
+                                <label id="counter_5">9</label>
+                            </button>
+                        </div>
+                        <div class="col col-num">
+                            <button class="btn btn-num btn-lg btn-info m-1" data-num="6">
+                                <label class="lbl-num">6</label>
+                                <label id="counter_6">9</label>
+                            </button>
+                        </div>
+                        <div class="col col-num">
+                            <button class="btn btn-num btn-lg btn-info m-1" data-num="7">
+                                <label class="lbl-num">7</label>
+                                <label id="counter_7">9</label>
+                            </button>
+                        </div>
+                        <div class="col col-num">
+                            <button class="btn btn-num btn-lg btn-info m-1" data-num="8">
+                                <label class="lbl-num">8</label>
+                                <label id="counter_8">9</label>
+                            </button>
+                        </div>
+                        <div class="col col-num">
+                            <button class="btn btn-num btn-lg btn-info m-1" data-num="9">
+                                <label class="lbl-num">9</label>
+                                <label id="counter_9">9</label>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="btn btn-del btn-info m-1" id="del">DEL</button>
                 </div>
-                <div class="col col-num">
-                    <button class="btn btn-num btn-lg btn-info m-1" data-num="2">
-                        <label class="lbl-num">2</label>
-                        <label class="counter">9</label>
-                    </button>
-                </div>
-                <div class="col col-num">
-                    <button class="btn btn-num btn-lg btn-info m-1" data-num="3">
-                        <label class="lbl-num">3</label>
-                        <label class="counter">9</label>
-                    </button>
-                </div>
-                <div class="col col-num">
-                    <button class="btn btn-num btn-lg btn-info m-1" data-num="4">
-                        <label class="lbl-num">4</label>
-                        <label class="counter">9</label>
-                    </button>
-                </div>
-                <div class="col col-num">
-                    <button class="btn btn-num btn-lg btn-info m-1" data-num="5">
-                        <label class="lbl-num">5</label>
-                        <label class="counter">9</label>
-                    </button>
-                </div>
-                <div class="col col-num">
-                    <button class="btn btn-num btn-lg btn-info m-1" data-num="6">
-                        <label class="lbl-num">6</label>
-                        <label class="counter">9</label>
-                    </button>
-                </div>
-                <div class="col col-num">
-                    <button class="btn btn-num btn-lg btn-info m-1" data-num="7">
-                        <label class="lbl-num">7</label>
-                        <label class="counter">9</label>
-                    </button>
-                </div>
-                <div class="col col-num">
-                    <button class="btn btn-num btn-lg btn-info m-1" data-num="8">
-                        <label class="lbl-num">8</label>
-                        <label class="counter">9</label>
-                    </button>
-                </div>
-                <div class="col col-num">
-                    <button class="btn btn-num btn-lg btn-info m-1" data-num="9">
-                        <label class="lbl-num">9</label>
-                        <label class="counter">9</label>
-                    </button>
+                <div class="col border-top text-start p-3">
+                    <button class="btn btn-lg btn-success" id="check">CHECK</button>
                 </div>
             </div>
-            <button class="btn btn-del btn-info m-1" id="del">DEL</button>
         </div>
     </div>
 </main>
@@ -190,16 +200,28 @@
 </script>
 <script>
     let target,
-        grid = $(".btn-grid")
+        grid = $(".btn-grid"),
+        list_sisa
+
     grid.on("click", function () {
         target = $(this)
         let row = target.data("row"),
             col = target.data("col"),
             sec_y = target.data("secy"),
-            sec_x = target.data("secx")
+            sec_x = target.data("secx"),
+            isi = target.text();
         focusing(row, col, sec_y, sec_x)
+        grid.each(function () {
+            if ($(this).text() !== "" && $(this).text() === isi) {
+                let row = $(this).data("row"),
+                    col = $(this).data("col"),
+                    sec_y = $(this).data("secy"),
+                    sec_x = $(this).data("secx")
+                focusing(row, col, sec_y, sec_x, false)
+                //$(this).toggleClass("btn-focus", true);
+            }
+        });
     });
-
     $(".btn-num").on("click", function () {
         let isi = $(this).data("num")
         setNum(isi)
@@ -209,87 +231,95 @@
         target.toggleClass("border-danger text-danger", false);
         delValidate()
     });
-
-
     $(window).on("click", function (e) {
         let clsna = e.target.className
         if (!clsna.includes('btn-grid') && !clsna.includes('btn-num') && !clsna.includes('btn-del')) {
             grid.toggleClass("btn-focus", false);
         }
-    }).on("keyup", function (e) {
-        let numbers = /^[-+]?[1-9]+$/;
-        if (e.key.match(numbers)) {
-            setNum(e.key);
-        } else if
-        (["Backspace", "Delete", "0"].includes(e.key)) {
-            target.text("");
-            target.toggleClass("border-danger text-danger", false);
-            delValidate();
-        } else if
-        (e.key === "ArrowRight") {
-            let row = target.data("row"),
-                col = target.data("col")
-            col < 9 ? col++ : col = 1
-            target = $(`.row_${row}.col_${col}`);
+    })
+        .on("keyup", function (e) {
+            let numbers = /^[-+]?[1-9]+$/;
+            if (e.key.match(numbers)) {
+                setNum(e.key);
+            } else if
+            (["Backspace", "Delete", "0"].includes(e.key)) {
+                target.text("");
+                target.toggleClass("border-danger text-danger", false);
+                delValidate();
+            } else if
+            (e.key === "ArrowRight") {
+                let row = target.data("row"),
+                    col = target.data("col")
+                col < 9 ? col++ : col = 1
+                target = $(`.row_${row}.col_${col}`);
 
-            let sec_y = target.data("secy"),
-                sec_x = target.data("secx")
-            focusing(row, col, sec_y, sec_x)
-        } else if
-        (e.key === "ArrowLeft") {
-            let row = target.data("row"),
-                col = target.data("col")
-            col === 1 ? col = 9 : col--
-            target = $(`.row_${row}.col_${col}`);
+                let sec_y = target.data("secy"),
+                    sec_x = target.data("secx")
+                focusing(row, col, sec_y, sec_x)
+            } else if
+            (e.key === "ArrowLeft") {
+                let row = target.data("row"),
+                    col = target.data("col")
+                col === 1 ? col = 9 : col--
+                target = $(`.row_${row}.col_${col}`);
 
-            let sec_y = target.data("secy"),
-                sec_x = target.data("secx")
-            focusing(row, col, sec_y, sec_x)
-        } else if
-        (e.key === "ArrowDown") {
-            let row = target.data("row"),
-                col = target.data("col")
-            row < 9 ? row++ : row = 1
-            target = $(`.row_${row}.col_${col}`);
+                let sec_y = target.data("secy"),
+                    sec_x = target.data("secx")
+                focusing(row, col, sec_y, sec_x)
+            } else if
+            (e.key === "ArrowDown") {
+                let row = target.data("row"),
+                    col = target.data("col")
+                row < 9 ? row++ : row = 1
+                target = $(`.row_${row}.col_${col}`);
 
-            let sec_y = target.data("secy"),
-                sec_x = target.data("secx")
-            focusing(row, col, sec_y, sec_x)
-        } else if
-        (e.key === "ArrowUp") {
-            let row = target.data("row"),
-                col = target.data("col")
-            row === 1 ? row = 9 : row--
-            target = $(`.row_${row}.col_${col}`);
+                let sec_y = target.data("secy"),
+                    sec_x = target.data("secx")
+                focusing(row, col, sec_y, sec_x)
+            } else if
+            (e.key === "ArrowUp") {
+                let row = target.data("row"),
+                    col = target.data("col")
+                row === 1 ? row = 9 : row--
+                target = $(`.row_${row}.col_${col}`);
 
-            let sec_y = target.data("secy"),
-                sec_x = target.data("secx")
-            focusing(row, col, sec_y, sec_x)
-        } else if
-        (e.key === "Tab" && !e.altKey && target) {
-            let row = target.data("row"),
-                col = target.data("col")
-            if (col === 9) {
-                if (row === 9) {
-                    row = 0
+                let sec_y = target.data("secy"),
+                    sec_x = target.data("secx")
+                focusing(row, col, sec_y, sec_x)
+            } else if
+            (e.key === "Tab" && !e.altKey && target) {
+                let row = target.data("row"),
+                    col = target.data("col")
+                if (col === 9) {
+                    if (row === 9) {
+                        row = 0
+                    }
+                    col = 1
+                    row += 1
+                } else {
+                    col += 1
                 }
-                col = 1
-                row += 1
-            } else {
-                col += 1
+                target = $(`.row_${row}.col_${col}`);
+                let sec_y = target.data("secy"),
+                    sec_x = target.data("secx")
+                focusing(row, col, sec_y, sec_x)
             }
-            target = $(`.row_${row}.col_${col}`);
-            let sec_y = target.data("secy"),
-                sec_x = target.data("secx")
-            focusing(row, col, sec_y, sec_x)
-        }
+        });
+    $("#check").on("click", function () {
+        check();
+        // checkV2();
     });
 
     function setNum(isi) {
         if (target) {
-            target.text(isi)
-            //validate(target)
-            validasi(target)
+            if (!list_sisa || list_sisa[parseInt(isi) - 1] > 0) {
+                target.text(isi)
+                //validate(target)
+                validasi(target)
+                countSisa();
+            } else {
+                console.log(list_sisa)
+            }
         }
     }
 
@@ -300,6 +330,12 @@
         $(`.secx_${sec_x}.secy_${sec_y}`).toggleClass("btn-focus", true);
         $(`.row_${row}`).toggleClass("btn-focus", true);
         $(`.col_${col}`).toggleClass("btn-focus", true);
+    }
+
+    function grouping(row, col, sec_y, sec_x) {
+        $(`.secx_${sec_x}.secy_${sec_y}`).toggleClass("group-invalid", true);
+        $(`.row_${row}`).toggleClass("group-invalid", true);
+        $(`.col_${col}`).toggleClass("group-invalid", true);
     }
 
     function validate(target) {
@@ -348,10 +384,159 @@
         target.toggleClass("border-danger text-danger", inrow || incol || insec);
     }
 
+    function countSisa() {
+        list_sisa = Array(9).fill(9)
+        grid.each(function () {
+            let angka = parseInt($(this).text())
+            if (!isNaN(angka)) {
+                list_sisa[angka - 1]--
+            }
+        })
+        list_sisa.forEach(function (v, i) {
+            let ctr = $("#counter_" + (i + 1))
+            ctr.text(v)
+            ctr.parents('button').prop("disabled", v === 0)
+        })
+    }
+
     function delValidate() {
+        countSisa();
         $(".btn-grid.border-danger.text-danger").each(function () {
             validasi($(this))
         });
+    }
+
+    let isian = [
+        [9, 0, 3, 0, 0, 8, 4, 0, 0],
+        [0, 5, 0, 1, 0, 7, 0, 0, 3],
+        [6, 8, 7, 3, 0, 2, 9, 0, 0],
+
+        [0, 0, 0, 6, 0, 0, 0, 0, 0],
+        [5, 3, 8, 2, 0, 0, 0, 0, 0],
+        [1, 0, 2, 0, 0, 4, 0, 9, 0],
+
+        [3, 0, 0, 9, 0, 6, 0, 7, 0],
+        [7, 2, 6, 8, 5, 1, 0, 4, 0],
+        [0, 0, 0, 4, 0, 3, 2, 5, 0],
+    ]
+
+    load();
+
+    function load() {
+        grid.each(function () {
+            let col = $(this).data("col"),
+                row = $(this).data("row"),
+                isi = isian[row - 1][col - 1]
+            if (isi !== 0) {
+                $(this).text(isi)
+                validasi($(this))
+            }
+        });
+        countSisa();
+    }
+
+    function clear() {
+        grid.each(function () {
+            $(this).text("");
+        });
+        $(".btn-grid.border-danger.text-danger").toggleClass("border-danger text-danger")
+    }
+
+    function check() {
+        grid.each(function () {
+            let tgt = $(this),
+                isi = tgt.text(),
+                row = tgt.data("row"),
+                col = tgt.data("col"),
+                secy = tgt.data("secy"),
+                secx = tgt.data("secx"),
+                posible = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+            if (isi === "") {
+                // region check col
+                $(".col_" + col).each(function () {
+                    let ind = posible.indexOf($(this).text());
+                    if (ind > -1) {
+                        posible.splice(ind, 1)
+                    }
+                });
+                // endregion check col
+                if (posible.length === 1) {
+                    tgt.text(posible[0]).toggleClass("new", true);
+                }
+                // region check row
+                $(".row_" + row).each(function () {
+                    let ind = posible.indexOf($(this).text());
+                    if (ind > -1) {
+                        posible.splice(ind, 1)
+                    }
+                });
+                if (posible.length === 1) {
+                    tgt.text(posible[0]).toggleClass("new", true);
+                }
+                // endregion check row
+                //region check sec
+                $(`.secx_${secx}.secy_${secy}`).each(function () {
+                    let ind = posible.indexOf($(this).text());
+                    if (ind > -1) {
+                        posible.splice(ind, 1)
+                    }
+                })
+                if (posible.length === 1) {
+                    tgt.text(posible[0]).toggleClass("new", true);
+                }
+                //endregion check sec
+                console.log(posible)
+                // console.log(row, col)
+            }
+        });
+        // if (!isSolved()) {
+        //     setTimeout(check, 500)
+        // } else {
+        //     setTimeout(function () {
+        //         alert("Solved!")
+        //     }, 1000)
+        // }
+        if (isSolved()) {
+            $("#check").prop("disabled", true);
+            setTimeout(function () {
+                alert("Solved!")
+            }, 1000)
+        }
+    }
+
+    function checkV2() {
+        if (list_sisa === undefined) {
+            countSisa()
+        }
+        list_sisa.forEach(function (v, i) {
+            let isi = i + 1,
+                sector = [
+                    $(".secx_1.secy_1"), $(".secx_1.secy_2"), $(".secx_1.secy_3"),
+                    $(".secx_2.secy_1"), $(".secx_2.secy_2"), $(".secx_2.secy_3"),
+                    $(".secx_3.secy_1"), $(".secx_3.secy_2"), $(".secx_3.secy_3"),
+                ]
+            grid.each(function () {
+                if ($(this).text() === String(isi)) {
+                    let row = $(this).data("row"),
+                        col = $(this).data("col"),
+                        sec_y = $(this).data("secy"),
+                        sec_x = $(this).data("secx")
+                    grouping(row, col, sec_y, sec_x);
+                }
+            })
+            $.each(sector, function (i) {
+                console.log(i, !$(this).hasClass("group-invalid"))
+            });
+            $(".group-invalid").removeClass("group-invalid")
+        })
+    }
+
+    function isSolved() {
+        let list_fill = []
+        grid.each(function () {
+            list_fill.push($(this).text() !== "")
+        });
+        return list_fill.every((e) => e)
     }
 </script>
 </body>
