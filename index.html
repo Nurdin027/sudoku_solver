@@ -361,6 +361,7 @@
     $(".btn-clr").on("click", function () {
         if (confirm("Clear all?")) {
             $(".btn-grid").text("");
+            $(".new").removeClass("new");
             for (let i = 1; i < 10; i++) {
                 $("#counter_" + i).text("9");
             }
