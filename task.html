@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <style>
+        .seven-header {
+            width: 14.2857142857%;
+            flex: 0 0 auto;
+        }
+
+        .seven-cols {
+            width: 14.2857142857%;
+            flex: 0 0 auto;
+            aspect-ratio: 1/1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="seven-header text-center">
+            <h5>Min</h5>
+        </div>
+        <div class="seven-header text-center">
+            <h5>Sen</h5>
+        </div>
+        <div class="seven-header text-center">
+            <h5>Sel</h5>
+        </div>
+        <div class="seven-header text-center">
+            <h5>Rab</h5>
+        </div>
+        <div class="seven-header text-center">
+            <h5>Kam</h5>
+        </div>
+        <div class="seven-header text-center">
+            <h5>Jum</h5>
+        </div>
+        <div class="seven-header text-center">
+            <h5>Sab</h5>
+        </div>
+    </div>
+    <div id="calendar"></div>
+</div>
+<div>Sisa: <strong id="sisa"></strong></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script src="https://momentjs.com/downloads/moment.min.js"></script>
+<script>
+    $(document).ready(function () {
+        let now = new Date(),
+            start = new Date(now.getFullYear(), now.getMonth(), 1),
+            end = new Date(now.getFullYear(), now.getMonth() + 1, 0),
+            tgl = moment(start),
+            isi = "",
+            jarak = 3, max = 14
+        for (let i = 0; i < start.getDay(); i++) {
+            isi += `
+                <div class="seven-cols border h-100"></div>
+            `
+        }
+        while (tgl <= end) {
+            let bg = ""
+            if (tgl._d.getDate() === now.getDate()) {
+                bg = "border-primary border-5"
+            }
+            if (max > 0 && (tgl.day() === 6 || tgl.date() % jarak === 1)) {
+                bg += " bg-info"
+                max -= 1
+            }
+            isi += `
+                <div class="seven-cols border ${bg} text-center align-content-center">
+                    <h2 class="text-muted">${tgl.format("D")}</h2>
+                </div>
+            `
+            tgl = moment(tgl).add(1, 'days')
+        }
+        $("#calendar").append(`
+            <div class="row">
+                ${isi}
+            </div>
+        `);
+        $("#sisa").text(max);
+    });
+</script>
+</body>
+</html>
